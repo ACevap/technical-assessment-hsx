@@ -1,0 +1,4 @@
+# Hiding IDE-specific files
+.idea
+# Hiding TF-specific files
+tf/.terraform
