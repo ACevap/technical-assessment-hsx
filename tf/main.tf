@@ -6,38 +6,38 @@ locals {
   }
 }
 
-resource "azurerm_resource_group" "hsx-rg" {
+resource "azurerm_resource_group" "hsx_rg" {
   name     = "rg-ta-hsx"
   location = "West Europe"
 
   tags = local.common_tags
 }
 
-resource "azurerm_virtual_network" "hsx-vnet" {
+resource "azurerm_virtual_network" "hsx_vnet" {
   name                = "vnet-ta-hsx"
   address_space       = ["10.0.0.0/26"]
-  location            = azurerm_resource_group.hsx-rg.location
-  resource_group_name = azurerm_resource_group.hsx-rg.name
+  location            = azurerm_resource_group.hsx_rg.location
+  resource_group_name = azurerm_resource_group.hsx_rg.name
 
   tags = local.common_tags
 }
 
-resource "azurerm_subnet" "hsx-vm-subnet" {
+resource "azurerm_subnet" "hsx_vm_subnet" {
   name                 = "subnet-ta-hsx"
-  resource_group_name  = azurerm_resource_group.hsx-rg.name
-  virtual_network_name = azurerm_virtual_network.hsx-vnet.name
+  resource_group_name  = azurerm_resource_group.hsx_rg.name
+  virtual_network_name = azurerm_virtual_network.hsx_vnet.name
   address_prefixes     = ["10.0.0.0/27"]
 }
 
 
-resource "azurerm_linux_virtual_machine" "hsx-vm" {
+resource "azurerm_linux_virtual_machine" "hsx_vm" {
   name                = "vm-ta-hsx"
-  resource_group_name = azurerm_resource_group.hsx-rg.name
-  location            = azurerm_resource_group.hsx-rg.location
+  resource_group_name = azurerm_resource_group.hsx_rg.name
+  location            = azurerm_resource_group.hsx_rg.location
   size                = "Standard_A2_v2"
   admin_username      = "adminuser"
   network_interface_ids = [
-    azurerm_network_interface.hsx-vm-nic.id,
+    azurerm_network_interface.hsx_vm_nic.id,
   ]
 
   admin_ssh_key {
@@ -60,34 +60,34 @@ resource "azurerm_linux_virtual_machine" "hsx-vm" {
   tags = local.common_tags
 }
 
-resource "azurerm_network_interface" "hsx-vm-nic" {
+resource "azurerm_network_interface" "hsx_vm_nic" {
   name                = "vm-nic-ta-hsx"
-  location            = azurerm_resource_group.hsx-rg.location
-  resource_group_name = azurerm_resource_group.hsx-rg.name
+  location            = azurerm_resource_group.hsx_rg.location
+  resource_group_name = azurerm_resource_group.hsx_rg.name
 
   ip_configuration {
     name                          = "internal"
-    subnet_id                     = azurerm_subnet.hsx-vm-subnet.id
+    subnet_id                     = azurerm_subnet.hsx_vm_subnet.id
     private_ip_address_allocation = "Dynamic"
-    public_ip_address_id          = azurerm_public_ip.hsx-vm-public-ip.id
+    public_ip_address_id          = azurerm_public_ip.hsx_vm_public_ip.id
   }
 
   tags = local.common_tags
 }
 
-resource "azurerm_public_ip" "hsx-vm-public-ip" {
+resource "azurerm_public_ip" "hsx_vm_public_ip" {
   name                = "vm-pip-ta-hsx"
-  resource_group_name = azurerm_resource_group.hsx-rg.name
-  location            = azurerm_resource_group.hsx-rg.location
+  resource_group_name = azurerm_resource_group.hsx_rg.name
+  location            = azurerm_resource_group.hsx_rg.location
   allocation_method   = "Static"
 
   tags = local.common_tags
 }
 
-resource "azurerm_network_security_group" "hsx-nsg" {
+resource "azurerm_network_security_group" "hsx_nsg" {
   name                = "nsg-ta-hsx"
-  location            = azurerm_resource_group.hsx-rg.location
-  resource_group_name = azurerm_resource_group.hsx-rg.name
+  location            = azurerm_resource_group.hsx_rg.location
+  resource_group_name = azurerm_resource_group.hsx_rg.name
 
   security_rule {
     name                   = "Allow-SSH"
@@ -110,7 +110,7 @@ resource "azurerm_network_security_group" "hsx-nsg" {
   tags = local.common_tags
 }
 
-resource "azurerm_subnet_network_security_group_association" "hsx-subnet-nsg-association" {
-  subnet_id                 = azurerm_subnet.hsx-vm-subnet.id
-  network_security_group_id = azurerm_network_security_group.hsx-nsg.id
+resource "azurerm_subnet_network_security_group_association" "hsx_subnet_nsg_association" {
+  subnet_id                 = azurerm_subnet.hsx_vm_subnet.id
+  network_security_group_id = azurerm_network_security_group.hsx_nsg.id
 }
