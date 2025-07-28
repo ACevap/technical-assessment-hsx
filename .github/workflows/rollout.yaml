@@ -1,14 +1,12 @@
-name: Rollout Technical Assessment
+name: Rollout Technical Assessment HSX
 
 on: workflow_dispatch
 
 env:
-#  TF_CLOUD_ORGANIZATION: "${{ secrets.TF_CLOUD_ORGANIZATION }}"
-#  TF_WORKSPACE: "${{ secrets.TF_WORKSPACE }}"
   TF_API_TOKEN: "${{ secrets.TF_API_TOKEN }}"
 
 jobs:
-  rollout:
+  Rollout-Technical-Assessment:
     runs-on: ubuntu-latest
     defaults:
       run:
