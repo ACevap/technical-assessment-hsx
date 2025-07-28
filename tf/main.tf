@@ -1,12 +1,16 @@
+locals {
+  common_tags = {
+    Environment = "prod"
+    Project = "TechnicalAssessment-HSX"
+    Owner = "Alex"
+  }
+}
+
 resource "azurerm_resource_group" "hsx-rg" {
   name     = "rg-ta-hsx"
   location = "West Europe"
 
-  tags = {
-    Environment = "Production"
-    Project = "TechnicalAssessment-HSX"
-    Owner       = "Alex"
-  }
+  tags = local.common_tags
 }
 
 resource "azurerm_virtual_network" "hsx-vnet" {
@@ -15,11 +19,7 @@ resource "azurerm_virtual_network" "hsx-vnet" {
   location            = azurerm_resource_group.hsx-rg.location
   resource_group_name = azurerm_resource_group.hsx-rg.name
 
-  tags = {
-    Environment = "Production"
-    Project = "TechnicalAssessment-HSX"
-    Owner       = "Alex"
-  }
+  tags = local.common_tags
 }
 
 resource "azurerm_subnet" "hsx-vm-subnet" {
@@ -57,11 +57,7 @@ resource "azurerm_linux_virtual_machine" "hsx-vm" {
     version   = "latest"
   }
 
-  tags = {
-    Environment = "Production"
-    Project = "TechnicalAssessment-HSX"
-    Owner       = "Alex"
-  }
+  tags = local.common_tags
 }
 
 resource "azurerm_network_interface" "hsx-vm-nic" {
@@ -76,11 +72,7 @@ resource "azurerm_network_interface" "hsx-vm-nic" {
     public_ip_address_id          = azurerm_public_ip.hsx-vm-public-ip.id
   }
 
-  tags = {
-    Environment = "Production"
-    Project = "TechnicalAssessment-HSX"
-    Owner       = "Alex"
-  }
+  tags = local.common_tags
 }
 
 resource "azurerm_public_ip" "hsx-vm-public-ip" {
@@ -89,11 +81,7 @@ resource "azurerm_public_ip" "hsx-vm-public-ip" {
   location            = azurerm_resource_group.hsx-rg.location
   allocation_method   = "Static"
 
-  tags = {
-    Environment = "Production"
-    Project = "TechnicalAssessment-HSX"
-    Owner       = "Alex"
-  }
+  tags = local.common_tags
 }
 
 resource "azurerm_network_security_group" "hsx-nsg" {
@@ -118,11 +106,7 @@ resource "azurerm_network_security_group" "hsx-nsg" {
     destination_port_range     = "80"
   }
 
-  tags = {
-    Environment = "Production"
-    Project = "TechnicalAssessment-HSX"
-    Owner       = "Alex"
-  }
+  tags = local.common_tags
 }
 
 resource "azurerm_subnet_network_security_group_association" "hsx-subnet-nsg-association" {
