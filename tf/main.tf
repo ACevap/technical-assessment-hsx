@@ -1,6 +1,12 @@
 resource "azurerm_resource_group" "hsx-rg" {
   name     = "rg-ta-hsx"
   location = "West Europe"
+
+  tags = {
+    Environment = "Production"
+    Project = "TechnicalAssessment-HSX"
+    Owner       = "Alex"
+  }
 }
 
 resource "azurerm_virtual_network" "hsx-vnet" {
