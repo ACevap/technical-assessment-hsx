@@ -90,21 +90,27 @@ resource "azurerm_network_security_group" "hsx_nsg" {
   resource_group_name = azurerm_resource_group.hsx_rg.name
 
   security_rule {
-    name                   = "Allow-SSH"
-    priority               = 100
-    direction              = "Inbound"
-    access                 = "Allow"
-    protocol               = "Tcp"
-    destination_port_range = "22"
+    name                       = "Allow-SSH"
+    priority                   = 100
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    destination_port_range     = "22"
+    source_port_range          = "*"
+    source_address_prefix      = "*"
+    destination_address_prefix = "*"
   }
 
   security_rule {
-    name                   = "Allow-HTTP"
-    priority               = 101
-    direction              = "Inbound"
-    access                 = "Allow"
-    protocol               = "Tcp"
-    destination_port_range = "80"
+    name                       = "Allow-HTTP"
+    priority                   = 101
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    destination_port_range     = "80"
+    source_port_range          = "*"
+    source_address_prefix      = "*"
+    destination_address_prefix = "*"
   }
 
   tags = local.common_tags
