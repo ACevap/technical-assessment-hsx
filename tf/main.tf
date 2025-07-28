@@ -1,8 +1,8 @@
 locals {
   common_tags = {
     Environment = "prod"
-    Project = "TechnicalAssessment-HSX"
-    Owner = "Alex"
+    Project     = "TechnicalAssessment-HSX"
+    Owner       = "Alex"
   }
 }
 
@@ -90,20 +90,21 @@ resource "azurerm_network_security_group" "hsx-nsg" {
   resource_group_name = azurerm_resource_group.hsx-rg.name
 
   security_rule {
-    name                       = "Allow-SSH"
-    priority                   = 100
-    direction                  = "Inbound"
-    access                     = "Allow"
-    protocol                   = "Tcp"
-    destination_port_range     = "22"
+    name                   = "Allow-SSH"
+    priority               = 100
+    direction              = "Inbound"
+    access                 = "Allow"
+    protocol               = "Tcp"
+    destination_port_range = "22"
   }
+
   security_rule {
-    name                       = "Allow-HTTP"
-    priority                   = 101
-    direction                  = "Inbound"
-    access                     = "Allow"
-    protocol                   = "Tcp"
-    destination_port_range     = "80"
+    name                   = "Allow-HTTP"
+    priority               = 101
+    direction              = "Inbound"
+    access                 = "Allow"
+    protocol               = "Tcp"
+    destination_port_range = "80"
   }
 
   tags = local.common_tags
