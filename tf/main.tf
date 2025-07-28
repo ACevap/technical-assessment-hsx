@@ -95,3 +95,37 @@ resource "azurerm_public_ip" "hsx-vm-public-ip" {
     Owner       = "Alex"
   }
 }
+
+resource "azurerm_network_security_group" "hsx-nsg" {
+  name                = "nsg-ta-hsx"
+  location            = azurerm_resource_group.hsx-rg.location
+  resource_group_name = azurerm_resource_group.hsx-rg.name
+
+  security_rule {
+    name                       = "Allow-SSH"
+    priority                   = 100
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    destination_port_range     = "22"
+  }
+  security_rule {
+    name                       = "Allow-HTTP"
+    priority                   = 101
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    destination_port_range     = "80"
+  }
+
+  tags = {
+    Environment = "Production"
+    Project = "TechnicalAssessment-HSX"
+    Owner       = "Alex"
+  }
+}
+
+resource "azurerm_subnet_network_security_group_association" "hsx-subnet-nsg-association" {
+  subnet_id                 = azurerm_subnet.hsx-vm-subnet.id
+  network_security_group_id = azurerm_network_security_group.hsx-nsg.id
+}
