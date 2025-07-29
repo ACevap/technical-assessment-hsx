@@ -7,15 +7,15 @@ locals {
 }
 
 resource "azurerm_resource_group" "hsx_rg" {
-  name     = "rg-ta-hsx"
-  location = "West Europe"
+  name     = "rg-${var.project_name}"
+  location = var.location
 
   tags = local.common_tags
 }
 
 resource "azurerm_virtual_network" "hsx_vnet" {
-  name                = "vnet-ta-hsx"
-  address_space       = ["10.0.0.0/26"]
+  name                = "vnet-${var.project_name}"
+  address_space       = var.vnet_address_space
   location            = azurerm_resource_group.hsx_rg.location
   resource_group_name = azurerm_resource_group.hsx_rg.name
 
@@ -23,25 +23,25 @@ resource "azurerm_virtual_network" "hsx_vnet" {
 }
 
 resource "azurerm_subnet" "hsx_vm_subnet" {
-  name                 = "subnet-ta-hsx"
+  name                 = "subnet-${var.project_name}"
   resource_group_name  = azurerm_resource_group.hsx_rg.name
   virtual_network_name = azurerm_virtual_network.hsx_vnet.name
-  address_prefixes     = ["10.0.0.0/27"]
+  address_prefixes     = var.subnet_address_space
 }
 
 
 resource "azurerm_linux_virtual_machine" "hsx_vm" {
-  name                = "vm-ta-hsx"
+  name                = "vm-${var.project_name}"
   resource_group_name = azurerm_resource_group.hsx_rg.name
   location            = azurerm_resource_group.hsx_rg.location
-  size                = "Standard_A2_v2"
-  admin_username      = "adminuser"
+  size                = var.vm_size
+  admin_username      = var.admin_username
   network_interface_ids = [
     azurerm_network_interface.hsx_vm_nic.id,
   ]
 
   admin_ssh_key {
-    username   = "adminuser"
+    username   = var.admin_username
     public_key = var.ssh_public_key
   }
 
@@ -61,7 +61,7 @@ resource "azurerm_linux_virtual_machine" "hsx_vm" {
 }
 
 resource "azurerm_network_interface" "hsx_vm_nic" {
-  name                = "vm-nic-ta-hsx"
+  name                = "vm-nic-${var.project_name}"
   location            = azurerm_resource_group.hsx_rg.location
   resource_group_name = azurerm_resource_group.hsx_rg.name
 
@@ -76,7 +76,7 @@ resource "azurerm_network_interface" "hsx_vm_nic" {
 }
 
 resource "azurerm_public_ip" "hsx_vm_public_ip" {
-  name                = "vm-pip-ta-hsx"
+  name                = "vm-pip-${var.project_name}"
   resource_group_name = azurerm_resource_group.hsx_rg.name
   location            = azurerm_resource_group.hsx_rg.location
   allocation_method   = "Static"
@@ -85,7 +85,7 @@ resource "azurerm_public_ip" "hsx_vm_public_ip" {
 }
 
 resource "azurerm_network_security_group" "hsx_nsg" {
-  name                = "nsg-ta-hsx"
+  name                = "nsg-${var.project_name}"
   location            = azurerm_resource_group.hsx_rg.location
   resource_group_name = azurerm_resource_group.hsx_rg.name
 
