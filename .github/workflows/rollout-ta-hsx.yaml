@@ -9,6 +9,8 @@ env:
 jobs:
   terraform:
     runs-on: ubuntu-latest
+    outputs:
+      ta_hsx_vm_ip: ${{ steps.tfoutputs.outputs.ta_hsx_vm_ip }}
     defaults:
       run:
         working-directory: tf
@@ -42,12 +44,18 @@ jobs:
         id: apply
         run: terraform apply -auto-approve
 
+      - name: Get Terraform Outputs
+        id: tfoutputs
+        run: echo "ta_hsx_vm_ip=$(terraform output -raw ta_hsx_vm_ip)" >> "$GITHUB_OUTPUT"
+
   ansible:
     runs-on: ubuntu-latest
+    env:
+      ta_hsx_vm_ip: ${{ needs.terraform.outputs.ta_hsx_vm_ip }}
     needs: terraform
-    defaults:
-      run:
-        working-directory: ansible
+#    defaults:
+#      run:
+#        working-directory: ansible
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
