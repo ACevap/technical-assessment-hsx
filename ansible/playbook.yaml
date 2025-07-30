@@ -1,0 +1,5 @@
+- name: Configure VM with Docker & App Stack
+  hosts: all
+  become: yes
+  roles:
+    - docker
