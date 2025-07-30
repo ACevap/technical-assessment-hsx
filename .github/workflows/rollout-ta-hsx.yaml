@@ -8,6 +8,7 @@ env:
 
 jobs:
   terraform:
+    name: "Terraform Plan & Apply"
     runs-on: ubuntu-latest
     outputs:
       ta_hsx_vm_ip: ${{ steps.tfoutputs.outputs.ta_hsx_vm_ip }}
@@ -49,13 +50,15 @@ jobs:
         run: echo "ta_hsx_vm_ip=$(terraform output -raw ta_hsx_vm_ip)" >> "$GITHUB_OUTPUT"
 
   ansible:
+    name: "Ansible Configuration Management of VM"
     runs-on: ubuntu-latest
     env:
+      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
       ta_hsx_vm_ip: ${{ needs.terraform.outputs.ta_hsx_vm_ip }}
     needs: terraform
-#    defaults:
-#      run:
-#        working-directory: ansible
+    defaults:
+      run:
+        working-directory: ansible
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
@@ -66,5 +69,20 @@ jobs:
           sudo apt update
           sudo apt install -y ansible
 
-      - name: Verify Ansible Installation
-        run: ansible --version
+      - name: Write SSH private key for VM access
+        run: |
+              mkdir -p ~/.ssh
+              echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+              chmod 600 ~/.ssh/id_rsa
+
+      - name: Add VM to known_hosts (avoid interactive prompt)
+        run: | 
+              ssh-keyscan -H ${{ env.ta_hsx_vm_ip }} >> ~/.ssh/known_hosts
+
+      - name: Run Ansible Playbook
+        run: | 
+              ansible-playbook \
+              -i "${{ env.ta_hsx_vm_ip }}," \
+              -u adminuser \
+              playbook.yaml \
+              --private-key ~/.ssh/id_rsa
