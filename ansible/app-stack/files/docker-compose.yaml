@@ -31,6 +31,26 @@ services:
     networks:
       - ta_hsx_net
 
+  oauth2-proxy:
+    image: quay.io/oauth2-proxy/oauth2-proxy:latest
+    container_name: oauth2-proxy
+    environment:
+      OAUTH2_PROXY_PROVIDER: ${OAUTH2_PROXY_PROVIDER}
+      OAUTH2_PROXY_CLIENT_ID: ${OAUTH2_PROXY_CLIENT_ID}
+      OAUTH2_PROXY_CLIENT_SECRET: ${OAUTH2_PROXY_CLIENT_SECRET}
+      OAUTH2_PROXY_UPSTREAMS: ${OAUTH2_PROXY_UPSTREAMS}
+      OAUTH2_PROXY_COOKIE_SECRET: ${OAUTH2_PROXY_COOKIE_SECRET}
+      OAUTH2_PROXY_COOKIE_SECURE: ${OAUTH2_PROXY_COOKIE_SECURE}
+      OAUTH2_PROXY_OIDC_ISSUER_URL: ${OAUTH2_PROXY_OIDC_ISSUER_URL}
+      OAUTH2_PROXY_REDIRECT_URL: ${OAUTH2_PROXY_REDIRECT_URL}
+      OAUTH2_PROXY_HTTP_ADDRESS: ${OAUTH2_PROXY_HTTP_ADDRESS}
+    ports:
+      - "4180:4180"
+    depends_on:
+      - keycloak
+    networks:
+      - ta_hsx_net
+
   nginx:
     image: nginx:latest
     container_name: nginx
@@ -39,6 +59,8 @@ services:
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
     restart: unless-stopped
+    depends_on:
+      - oauth2-proxy
     networks:
        - ta_hsx_net
 
