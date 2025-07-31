@@ -23,6 +23,12 @@
     state: present
   loop: "{{ github_secrets | dict2items }}"
 
+- name: Copy Keycloak realm export folder
+  copy:
+    src: "../files/keycloak_realm_export"
+    dest: "{{ app_stack_dir }}/keycloak_realm_export"
+    mode: '0755'
+
 - name: Deploy containers with Docker Compose
   command: docker compose up -d
   args:
