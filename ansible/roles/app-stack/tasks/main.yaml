@@ -25,7 +25,7 @@
 
 - name: Copy Keycloak realm export folder
   copy:
-    src: "../files/keycloak_realm_export"
+    src: "../files/keycloak_realm_export/"
     dest: "{{ app_stack_dir }}/keycloak_realm_export"
     mode: '0755'
 
