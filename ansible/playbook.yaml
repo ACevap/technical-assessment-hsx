@@ -4,6 +4,9 @@
   vars:
     app_stack_dir: /opt/app-stack
     docker_env_file: "{{ app_stack_dir }}/.env"
+    github_secrets:
+      POSTGRES_PASSWORD: "{{ lookup('env', 'POSTGRES_PASSWORD') }}"
+      KEYCLOAK_ADMIN_PASSWORD: "{{ lookup('env', 'KEYCLOAK_ADMIN_PASSWORD') }}"
   roles:
     - docker
     - app-stack
