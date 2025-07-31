@@ -15,14 +15,6 @@
     dest: "{{ docker_env_file }}"
     mode: '0644'
 
-- name: Append GitHub secrets to .env
-  lineinfile:
-    path: "{{ docker_env_file }}"
-    line: "{{ item.key }}={{ item.value }}"
-    create: yes
-    state: present
-  loop: "{{ github_secrets | dict2items }}"
-
 - name: Deploy containers with Docker Compose
   command: docker compose up -d
   args:
