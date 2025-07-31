@@ -89,5 +89,5 @@ jobs:
               playbook.yaml \
               --private-key ~/.ssh/id_rsa
         env:
-          POSTGRES_PASSWORD: ${{ vars.POSTGRES_PASSWORD }}
-          KEYCLOAK_ADMIN_PASSWORD: ${{ vars.KEYCLOAK_ADMIN_PASSWORD }}
+          POSTGRES_PASSWORD: ${{ env.POSTGRES_PASSWORD }}
+          KEYCLOAK_ADMIN_PASSWORD: ${{ env.KEYCLOAK_ADMIN_PASSWORD }}
