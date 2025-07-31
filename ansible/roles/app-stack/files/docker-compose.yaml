@@ -27,9 +27,6 @@ services:
       KC_DB_USERNAME: ${POSTGRES_USER}
       KC_DB_PASSWORD: ${POSTGRES_PASSWORD}
       KC_HTTP_RELATIVE_PATH: ${KC_HTTP_RELATIVE_PATH}
-#      KC_PROXY: ${KC_PROXY}
-#      KC_HTTP_ENABLED: ${KC_HTTP_ENABLED}
-#      KC_HTTPS_ENABLED: ${KC_HTTPS_ENABLED}
     volumes:
       - ./keycloak_realm_export:/opt/keycloak/data/import
     ports:
