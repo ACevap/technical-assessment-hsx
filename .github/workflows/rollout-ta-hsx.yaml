@@ -54,6 +54,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+      POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+      KEYCLOAK_ADMIN_PASSWORD: ${{ secrets.KEYCLOAK_ADMIN_PASSWORD }}
       ta_hsx_vm_ip: ${{ needs.terraform.outputs.ta_hsx_vm_ip }}
     needs: terraform
     defaults:
@@ -86,3 +88,6 @@ jobs:
               -u adminuser \
               playbook.yaml \
               --private-key ~/.ssh/id_rsa
+        env:
+          POSTGRES_PASSWORD: ${{ vars.POSTGRES_PASSWORD }}
+          KEYCLOAK_ADMIN_PASSWORD: ${{ vars.KEYCLOAK_ADMIN_PASSWORD }}
