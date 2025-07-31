@@ -3,6 +3,7 @@
   become: yes
   vars:
     app_stack_dir: /opt/app-stack
+    docker_env_file: "{{ app_stack_dir }}/.env"
   roles:
     - docker
     - app-stack
