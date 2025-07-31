@@ -1,6 +1,8 @@
 - name: Configure VM with Docker & App Stack
   hosts: all
   become: yes
+  vars:
+    app_stack_dir: /opt/app-stack
   roles:
     - docker
     - app-stack
