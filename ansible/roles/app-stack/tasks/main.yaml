@@ -1,0 +1,40 @@
+- name: Deploy App Stack with Docker Compose
+  hosts: all
+  become: yes
+  vars:
+    app_stack_dir: /opt/app-stack
+    docker_env_file: "{{ app_stack_dir }}/.env"
+    github_secrets:
+      POSTGRES_PASSWORD: "{{ lookup('env', 'POSTGRES_PASSWORD') }}"
+      KEYCLOAK_ADMIN_PASSWORD: "{{ lookup('env', 'KEYCLOAK_ADMIN_PASSWORD') }}"
+  tasks:
+
+    - name: Ensure app-stack directory exists
+      file:
+        path: "{{ app_stack_dir }}"
+        state: directory
+        mode: '0755'
+
+    - name: Copy docker-compose.yaml to remote
+      copy:
+        src: "../files/docker-compose.yaml"
+        dest: "{{ app_stack_dir }}/docker-compose.yaml"
+
+    - name: Copy .env to remote
+      copy:
+        src: "../files/.env"
+        dest: "{{ docker_env_file }}"
+        mode: '0644'
+
+    - name: Append GitHub secrets to .env
+      lineinfile:
+        path: "{{ docker_env_file }}"
+        line: "{{ item.key }}={{ item.value }}"
+        create: yes
+        state: present
+      loop: "{{ github_secrets | dict2items }}"
+
+    - name: Deploy containers with Docker Compose
+      command: docker compose up -d
+      args:
+        chdir: "{{ app_stack_dir }}"
